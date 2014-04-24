@@ -26,7 +26,6 @@ func main() {
 	params := map[string]string{"x:qiniuput": "put"}
 	extra := &io.PutExtra{
 		ChunkSize: 1024,
-		MimeType:  "text/plain",
 		Notify:    blockNotify,
 		Params:    params,
 	}
