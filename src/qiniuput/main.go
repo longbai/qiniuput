@@ -15,7 +15,7 @@ func main() {
 	token := flag.String("t", "", "upload token")
 	file := flag.String("f", "", "file path")
 	key := flag.String("k", "", "file key")
-	custom := flag.String("x", "", "custom args")
+	custom := flag.String("x", "", "custom args foo=1&bar=2")
 	flag.Parse()
 	if token == nil || file == nil || key == nil {
 		log.Fatalln("invalid args")
