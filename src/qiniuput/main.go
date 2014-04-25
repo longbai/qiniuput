@@ -4,15 +4,12 @@ import (
 	"flag"
 	"log"
 	"net/url"
+	"os"
 )
 
 import (
 	"github.com/qiniu/api/resumable/io"
 )
-
-func blockNotify(blkIdx int, blkSize int, ret *io.BlkputRet) {
-	log.Println("block id", blkIdx, "block size", blkSize)
-}
 
 func main() {
 	token := flag.String("t", "", "upload token")
@@ -25,9 +22,24 @@ func main() {
 		return
 	}
 
+	f, err := os.Open(*file)
+	if err != nil {
+		log.Fatalln("file not exist")
+		return
+	}
+	stat, err := f.Stat()
+	if err != nil || stat.IsDir() {
+		log.Fatalln("invalid file")
+		return
+	}
+
+	blockNotify := func(blkIdx int, blkSize int, ret *io.BlkputRet) {
+		log.Println("size", stat.Size(), "block id", blkIdx, "offset", ret.Offset)
+	}
+
 	params := map[string]string{}
 	extra := &io.PutExtra{
-		ChunkSize: 1024,
+		ChunkSize: 8192,
 		Notify:    blockNotify,
 		Params:    params,
 	}
@@ -43,7 +55,7 @@ func main() {
 		extra.Params = params
 	}
 	var ret io.PutRet
-	err := io.PutFile(nil, &ret, *token, *key, *file, extra)
+	err = io.PutFile(nil, &ret, *token, *key, *file, extra)
 	if err != nil {
 		log.Fatalln(err)
 	}
