@@ -17,7 +17,8 @@ func main() {
 	key := flag.String("k", "", "file key")
 	custom := flag.String("x", "", "custom args foo=1&bar=2")
 	flag.Parse()
-	if token == nil || file == nil || key == nil {
+	if *token == "" || *file == "" || *key == "" {
+		flag.PrintDefaults()
 		log.Fatalln("invalid args")
 		return
 	}
